@@ -61,11 +61,62 @@ describe "vector norms" do
 
       it "uses the euclidean norm as the default" do
         n = NVector.new(5, [-2, -1,  0,  1,  2], dtype)
-
         r = n.norm()
         r.should == n.norm(2)
         r.should == n.euclidean_norm
       end      
+    end
+  end
+end
+
+# The expected values is based on SciPy documentation on this page:
+#   http://docs.scipy.org/doc/scipy/reference/tutorial/linalg.html
+describe "matrix norms" do
+  [:int8, :int16, :int32, :int64, :float32, :float64, :rational32, :rational64, :rational128].each do |dtype|
+    context dtype do
+      before do
+        @n = NMatrix.new(:dense, [2, 2], [1, 2, 3, 4], dtype)
+      end
+
+      it "correctly calculates matrix norm with ord=INFINITY" do
+        r = @n.norm(Float::INFINITY)
+        r.should == 7
+      end
+
+      it "correctly calculates matrix norm with ord=-INFINITY" do
+        r = @n.norm(-Float::INFINITY)
+        r.should == 3
+      end
+
+      it "correctly calculates matrix norm with ord=1" do
+        r = @n.norm(1)
+        r.should == 6
+      end
+
+      it "correctly calculates matrix norm with ord=-1" do
+        r = @n.norm(-1)
+        r.should == 4
+      end
+
+      it "correctly calculates matrix norm with ord=2" do
+        r = @n.norm(2)
+        r.should == 5.4649857042190426 # Should not be exact eq!?
+      end
+
+      it "correctly calculates matrix norm with ord=-2" do
+        r = @n.norm(-2)
+        r.should == 0.36596619062625746 # Should not be exact eq!?
+      end
+
+      it "correctly calculates frobenius norm" do
+        r = @n.norm(:frobenius)
+        r.should == 5.4772255750516612 # Should not be exact eq!?
+      end
+
+      it "uses the frobenius norm by default" do
+        r = @n.norm
+        r.should == @n.norm(:frobenius) # Should not be exact eq!?
+      end
     end
   end
 end
