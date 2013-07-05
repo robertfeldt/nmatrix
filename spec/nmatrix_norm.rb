@@ -55,9 +55,17 @@ describe "vector norms" do
 
         (3..10).each do |p|
           r = n.norm(2)
-          r.should == (((-2)**p + 1 + 0 + 1 + 2**p) ** (1.0 / p)) # Should not be exact eq check...
+          r.should == ((2**p + 1 + 0 + 1 + 2**p) ** (1.0 / p)) # Should not be exact eq check...
         end
       end
+
+      it "uses the euclidean norm as the default" do
+        n = NVector.new(5, [-2, -1,  0,  1,  2], dtype)
+
+        r = n.norm()
+        r.should == n.norm(2)
+        r.should == n.euclidean_norm
+      end      
     end
   end
 end
