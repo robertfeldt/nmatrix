@@ -189,7 +189,7 @@ describe NMatrix do
           it "takes abs of vector" do
             n = NVector.new(3, [-1, 0, 1], dtype)
             r = n.abs
-            r.should == n = NVector.new(3, [1, 0, 1], dtype)
+            r.should == NVector.new(3, [1, 0, 1], dtype)
           end
         end
       end
