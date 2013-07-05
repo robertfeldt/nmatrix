@@ -176,5 +176,45 @@ describe NMatrix do
         r.should == NMatrix.new(:dense, [2,2], [1, 1, 0, 1], :byte)
       end
     end
+
+    context "elementwise abs" do
+      [:int8, :int16, :int32, :int64, :float32, :float64, :rational32, :rational64, :rational128].each do |dtype|
+        context dtype do
+          it "takes abs of matrix" do
+            n = NMatrix.new(:dense, [2,2], [-1, 1, 0, -12], dtype)
+            r = n.abs
+            r.should == NMatrix.new(:dense, [2,2], [1, 1, 0, 12], dtype)
+          end
+
+          it "takes abs of vector" do
+            n = NVector.new(3, [-1, 0, 1], dtype)
+            r = n.abs
+            r.should == n = NVector.new(3, [1, 0, 1], dtype)
+          end
+        end
+      end
+
+      [:complex64, :complex128].each do |dtype|
+        context dtype do
+          it "calculates the abs of complex numbers in all quadrants" do
+            n = NMatrix.new(:dense, [2,2], [Complex(3, 4), Complex(-3, 4), Complex(-3, -4), Complex(3, -4)], dtype)
+            r = n.abs
+            r.should == NMatrix.new(:dense, [2,2], [5, 5, 5, 5], dtype)
+          end
+
+          it "can take the abs of only the real part" do
+            n = NMatrix.new(:dense, [2,2], [Complex(3, 4), Complex(-3, 4), Complex(-3, -4), Complex(3, -4)], dtype)
+            r = n.real_abs
+            r.should == NMatrix.new(:dense, [2,2], [Complex(3, 4), Complex(3, 4), Complex(3, -4), Complex(3, -4)], dtype)
+          end
+
+          it "can take the abs of only the imaginary part" do
+            n = NMatrix.new(:dense, [2,2], [Complex(3, 4), Complex(-3, 4), Complex(-3, -4), Complex(3, -4)], dtype)
+            r = n.imag_abs
+            r.should == NMatrix.new(:dense, [2,2], [Complex(3, 4), Complex(-3, 4), Complex(-3, 4), Complex(3, 4)], dtype)
+          end
+        end
+      end
+    end
   end
 end
