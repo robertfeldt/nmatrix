@@ -117,6 +117,13 @@ describe "matrix norms" do
         r = @n.norm
         r.should == @n.norm(:frobenius) # Should not be exact eq!?
       end
+
+      it "raises an exception for norms with an ord not in [-Float::INFINITY, -2, -1, :frobenius, 1, 2, Float::INFINITY]" do
+        lamda {@n.norm(3)}.should_raise ArgumentError
+        lamda {@n.norm(-3)}.should_raise ArgumentError
+        lamda {@n.norm(:fro)}.should_raise ArgumentError
+        lamda {@n.norm("frobenius")}.should_raise ArgumentError
+      end
     end
   end
 end
